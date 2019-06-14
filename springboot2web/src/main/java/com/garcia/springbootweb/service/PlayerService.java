@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import com.garcia.springbootweb.entity.Player;
 import com.garcia.springbootweb.repository.PlayerRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service("playerService")
 public class PlayerService {
 
@@ -15,6 +18,7 @@ public class PlayerService {
 	private PlayerRepository repo;
 	
 	public List<Player> getPlayers(){
+		log.info("Invoking service PlayerService method getPlayers()");
 		return repo.findAll();
 	}
 	

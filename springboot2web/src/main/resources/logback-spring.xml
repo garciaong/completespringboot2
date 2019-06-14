@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- Use absolute path or relative path (leading no slash), relative path starts from root directory of the application -->
+	<property name="LOG_PATH" value="log" />
+	
+	<appender name="size-day-save-file"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/log.log</file>
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n
+			</Pattern>
+		</encoder>
+		<!-- File roll based on max file size of 2KB and kept for 2 days. If total archives reach 10KB remove the oldest -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>
+				${LOG_PATH}/archived/log_%d{dd-MM-yyyy}_%i.log
+			</fileNamePattern>
+			<maxFileSize>2KB</maxFileSize>
+			<maxHistory>2</maxHistory>
+			<totalSizeCap>10KB</totalSizeCap>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="daily-save-file"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/daily.log</file>
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n
+			</Pattern>
+		</encoder>
+		<!-- Roll new log file for 3 days and clean the oldest if total files size reach 3KB  -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>
+				${LOG_PATH}/archived/log_%d{dd-MM-yyyy}.log
+			</fileNamePattern>
+			<maxHistory>3</maxHistory>
+			<totalSizeCap>3KB</totalSizeCap>
+		</rollingPolicy>
+
+	</appender>
+
+
+	<appender name="console-out"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<springProfile name="dev">
+		<root level="error">
+			<appender-ref ref="console-out" />
+			<appender-ref ref="size-day-save-file" />
+		</root>
+		<logger name="org.springframework" additivity="false"
+			level="info">
+			<appender-ref ref="console-out" />
+			<appender-ref ref="size-day-save-file" />
+		</logger>
+		<logger name="com.garcia.springbootweb.controller" additivity="false"
+			level="info">
+			<appender-ref ref="daily-save-file" />
+		</logger>
+		<logger name="com.garcia.springbootweb.service" additivity="false"
+			level="info">
+			<appender-ref ref="size-day-save-file" />
+		</logger>
+	</springProfile>
+</configuration>
