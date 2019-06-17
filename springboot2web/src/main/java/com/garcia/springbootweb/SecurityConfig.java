@@ -36,8 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
+		//Permit access to h2 console and spring actuator without authentication
 		httpSecurity.authorizeRequests().antMatchers("/").permitAll().and().authorizeRequests()
-				.antMatchers("/h2-console/**").permitAll();
+				.antMatchers("/h2-console/**","/actuator/**", "/actuator").permitAll();
 		httpSecurity.csrf().disable();
 		httpSecurity.headers().frameOptions().disable();
 		super.configure(httpSecurity);
