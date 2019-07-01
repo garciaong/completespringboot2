@@ -1,0 +1,4 @@
+Github OAuth2
+--------------
+1)Setup OAuth setting in github path below
+Settings > Developer settings > OAuth Apps
